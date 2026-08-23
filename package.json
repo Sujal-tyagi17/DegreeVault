@@ -1,0 +1,29 @@
+{
+  "name": "degreevault",
+  "version": "1.0.0",
+  "description": "Decentralized Degree Verification System using Soulbound Tokens",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx hardhat test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sujal-tyagi17/DegreeVault.git"
+  },
+  "keywords": ["blockchain", "solidity", "degree-verification", "soulbound-token", "polygon"],
+  "author": "Sujal Tyagi",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Sujal-tyagi17/DegreeVault/issues"
+  },
+  "homepage": "https://github.com/Sujal-tyagi17/DegreeVault#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "dotenv": "^17.3.1",
+    "hardhat": "^2.22.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.4.0"
+  }
+}
