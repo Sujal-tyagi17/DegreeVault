@@ -329,7 +329,6 @@ Developed and conceptually driven by:
 - **Sujal Tyagi** 
 - **Amil Mahajan** 
 
-*(Originating from the Innovation Space initiative ecosystem)*
 
 ---
 
@@ -340,4 +339,4 @@ Distributed under the ISC License.
 
 ---
 
-**Built with ❤️ using Hardhat, Next.js & Polygon.**
+**Built using Hardhat, Next.js & Polygon.**
