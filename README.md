@@ -114,29 +114,35 @@ Traditional databases are faster and cheaper per write. Blockchain introduces ne
 ## ✨ Features
 
 ### Smart Contract Layer
-- **Issue Degrees**: Authorized universities issue academic credentials anchored to unique IDs.
-- **Verify Degrees**: Trustless, public verification mechanism validating cryptographic signatures.
-- **Revoke Degrees**: Secure revocation that triggers state changes without erasing immutable history.
-- **Access Control**: Strict OpenZeppelin role-based permissions avoiding arbitrary contract manipulation.
-- **Event Logging**: Transparent, structured event emissions mapping every architectural action.
+- **Issue Degrees**: Authorized universities issue academic credentials anchored to unique IDs as non-transferable Soulbound Tokens (SBTs).
+- **Batch Degree Issuance**: Mint multiple credentials in a single on-chain transaction to optimize gas costs.
+- **Verify Degrees**: Trustless, public verification mechanism validating cryptographic hashes and issuer signatures.
+- **Revoke Degrees with Guardrails**: Secure revocation that triggers state changes without erasing immutable history, backed by UI confirmation dialogs.
+- **Role-Based Access Control (RBAC)**: Strict OpenZeppelin `AccessControl` (`DEFAULT_ADMIN_ROLE`, `UNIVERSITY_ROLE`) preventing unauthorized contract manipulation.
+- **Event Logging**: Transparent, structured event emissions (`DegreeIssued`, `DegreeRevoked`) mapping every architectural action.
 
 ### DApp Frontend Layer
-- **Wallet Integration**: Native Web3 wallet connects (MetaMask) for secure execution contexts.
-- **Real-Time RPC Fetching**: Seamless verification status mapping using ethers.js.
-- **State & Error Management**: Clean UI/UX handling loading blocks, un-mined transactions, and invalid network states.
-- **Responsive Architecture**: Fully modern, Tailwind-powered, mobile-friendly interface.
+- **MetaMask Wallet Integration (EIP-1193)**: Native Web3 wallet connection with live account (`accountsChanged`) and chain (`chainChanged`) event listeners.
+- **Dynamic Role-Based Access Control UI**: Real-time role detection displaying admin tabs (**Issue**, **Batch Issue**, **Revoke**) for verified universities, and placing unauthorized wallets in read-only **Verifier Mode**.
+- **Network Validation & 1-Click Switcher**: Detects unsupported networks (e.g. Ethereum Mainnet `0x1`) and prompts 1-click automatic switching (`wallet_switchEthereumChain`) to Localhost (`31337`) or Polygon Amoy (`80002`).
+- **High-Error-Correction QR Code System**: Generates Level-H QR codes for every issued degree, featuring 1-click PNG image download and direct clipboard URL copying.
+- **Dedicated Zero-Wallet Employer Portal (`/verify?cert=...`)**: Employers and recruiters can scan QR codes to instantly verify credentials on-chain via read-only RPC—no MetaMask, wallet connection, or cryptocurrency required.
+- **Batch CSV Import & Preview**: Upload `.csv` files and inspect student records in an interactive table before batch-minting on-chain.
+- **"My Degrees" Student Portfolio**: Connected student wallets view their personal Soulbound Token credentials and real-time status.
+- **Real-Time Transaction Lifecycle**: Multi-state transaction card (`AWAITING_SIGNATURE` → `PENDING` → `CONFIRMED` / `FAILED`) with mined block numbers and explorer links.
 
 <a id="tech-stack"></a>
 ## 🛠️ Tech Stack
 
-- **Blockchain**: Polygon (Amoy Testnet / Mainnet)
-- **Smart Contracts**: Solidity ^0.8.20
-- **Security Standards**: OpenZeppelin Contracts (AccessControl)
-- **Frontend App**: Next.js 14 (TypeScript)
+- **Blockchain**: Polygon (Amoy Testnet `80002` / Mainnet `137`), Hardhat Local (`31337`)
+- **Smart Contracts**: Solidity `^0.8.20`
+- **Security Standards**: OpenZeppelin Contracts v5 (`AccessControl`, `ERC721`)
+- **Frontend App**: Next.js 14 App Router (TypeScript)
 - **Styling**: Tailwind CSS
-- **Web3 Interface**: ethers.js v6
-- **Test Framework**: Hardhat Chai Matchers
-- **Local Dev**: Hardhat Local Network
+- **Web3 Interface**: ethers.js v6 (`BrowserProvider` for signing, `JsonRpcProvider` for zero-wallet queries)
+- **QR Code Engine**: `qrcode` (Level-H high-error-correction canvas & data URL renderer)
+- **Test Framework**: Hardhat Chai Matchers, Playwright browser test suite
+- **Local Dev**: Hardhat Local Network (`http://127.0.0.1:8545`)
 
 ---
 
@@ -240,10 +246,13 @@ npm run dev
 ```
 Accessible at `http://localhost:3000`. 
 
-### Step 4: Interact via Wallet
-- **Issue**: Requires a wallet granted `UNIVERSITY_ROLE`. Signs a transaction generating the `DegreeIssued` event.
-- **Verify**: Purely functional read-call. No gas required. Returns credential mappings and validity booleans.
-- **Revoke**: Triggers a state update validating action from an authorized wallet.
+### Step 4: Interact via Wallet & Zero-Wallet Verification
+- **Issue Single / Batch**: Connect an account granted `UNIVERSITY_ROLE`. Enter student details (or upload a `.csv`) to mint on-chain credentials as Soulbound NFTs.
+- **QR Code Generation**: Once issued, DegreeVault automatically displays a Level-H QR code linking directly to `http://localhost:3000/verify?cert=<CERT_ID>`. You can download the PNG asset or copy the verification link.
+- **In-App & Public Verification (Zero Wallet Required)**:
+  - **In-App**: Anyone can query certificate status via the **Verify** tab.
+  - **Employer QR Portal**: Employers scan the QR code to open `/verify?cert=...`. The system fetches on-chain status immediately via RPC without requiring any MetaMask wallet or cryptocurrency.
+- **Revoke**: Authorized university accounts can revoke compromised or mistakenly issued credentials with a confirmation safety prompt. Mined immediately and reflected across all verification portals in real time.
 
 ---
 
@@ -288,19 +297,27 @@ After deployment, configure the target chain and updated contract address parame
 ```
 DegreeVault/
 ├── contracts/
-│   └── DegreeVerification.sol    # Core verifiable logic contract
+│   └── DegreeVerification.sol    # Soulbound ERC721 & AccessControl smart contract
 ├── scripts/
-│   └── deploy.js                 # Network-aware deployment script
+│   ├── deploy.js                 # Network-aware deployment script
+│   └── check-transactions.js     # Transaction validation script
 ├── test/
-│   └── DegreeVerification.test.js# Hardhat integration tests
+│   └── DegreeVerification.test.js# 32 Hardhat integration tests
 ├── frontend/
 │   ├── app/                      
-│   │   ├── page.tsx              # Main Next.js routing UI
-│   │   └── globals.css           # Tailwind system UI configs
+│   │   ├── page.tsx              # Main dApp dashboard & tab router
+│   │   ├── globals.css           # Design tokens & glassmorphism styling
+│   │   ├── verify/
+│   │   │   └── page.tsx          # Dedicated Zero-Wallet Employer Portal
+│   │   └── lib/
+│   │       ├── wallet.ts         # MetaMask provider & account state
+│   │       ├── network.ts        # Chain validation & 1-click switcher
+│   │       ├── qrcode.ts         # Level-H QR code generation & PNG export
+│   │       └── contract.ts       # Contract ABI, types & RPC helpers
 │   └── package.json
-├── docs/                         # Media architecture
-├── hardhat.config.js             # Deployment architecture & Web3 plugins
+├── hardhat.config.js             # Hardhat network & compiler configuration
 ├── .env.example                  # Environmental security template
+├── .gitignore                    # Production git exclusion rules
 └── README.md
 ```
 

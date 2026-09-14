@@ -15,3 +15,26 @@ node_modules
 
 # Local Testing Deployments
 frontend/public/contract.json
+
+# Documentation, Guides & Presentation Assets
+docs/
+TEST_FLOW_AND_PRESENTATION_GUIDE.md
+*.md.bak
+
+# Test & Execution Scripts (preserve deploy/check scripts)
+scripts/
+!scripts/deploy.js
+!scripts/check-transactions.js
+
+# Logs, Test Reports & Temporary Artifacts
+*.log
+playwright-report/
+test-results/
+.tempmediaStorage/
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
