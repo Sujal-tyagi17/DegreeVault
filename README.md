@@ -31,54 +31,104 @@
 <a id="visual-previews"></a>
 ## 📸 Visual Previews & Demo Narrative
 
-This section demonstrates the complete lifecycle of the DegreeVault system: from issuing a credential to public verification and authorized revocation.
+This section demonstrates the complete, end-to-end lifecycle of the DegreeVault system using an authentic institutional scenario from **Vellore Institute of Technology (VIT)**: from single & batch credential issuance, to zero-wallet QR verification and on-chain revocation.
 
-### 1. The Admin Dashboard (Overview)
-A high-level view providing real-time analytics on total degrees issued, verified, and revoked. Includes quick access to core functionalities.
+---
+
+### 1. The University Admin Dashboard (Overview & RBAC)
+A centralized dashboard providing real-time analytics on total degrees issued, verified, and active networks. Authorized university accounts display a purple **"University"** badge, unlocking the **Issue**, **Batch Issue**, and **Revoke** administrative tabs.
 
 <div align="center">
-  <img src="./assets/dashboard.png" alt="Admin Dashboard Overview" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
+  <img src="./assets/dashboard.png" alt="University Admin Dashboard Overview" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
 </div>
 <br/>
 
-### 2. Issue Degree (Issuance Lifecycle)
-The university issues a digital credential by entering student details and a unique cryptographic certificate ID. The transaction is instantly recorded on the Polygon network.
+When a non-university student or verifier connects their wallet, DegreeVault dynamically transitions into **Verifier Mode**, hiding administrative tabs and ensuring zero unauthorized contract interactions:
 
 <div align="center">
-  <img src="./assets/issue.png" alt="Issue Degree UI" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
+  <img src="./assets/02-verifier-mode.png" alt="Role-Based Access Control - Verifier Mode" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
 </div>
 <br/>
 
-### 3. Verify Degree (Public Verification)
-Anyone (e.g., employers) can publicly verify a credential by looking up its unique ID. The system queries the blockchain and confirms the exact state transitioning (Valid).
+---
+
+### 2. Network Validation & 1-Click Network Switcher
+If a user is connected to an unsupported chain (e.g. Ethereum Mainnet `0x1`), DegreeVault immediately displays a prominent warning banner. A single click on **"Switch to Localhost"** (or Polygon Amoy) invokes MetaMask's EIP-3326 RPC method to switch chains seamlessly.
 
 <div align="center">
-  <img src="./assets/verification.png" alt="Verify Degree UI" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
+  <img src="./assets/03-network-switcher.png" alt="Network Validation & 1-Click Switcher" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
 </div>
 <br/>
 
-### 4. Revoke Degree (Administrative Revocation)
-An authorized university role can revoke a credential if needed (e.g., due to student expulsion or error). This triggers a state transition but ensures historical data immutability.
+---
+
+### 3. Issue Degree & Automatic QR Code Generation
+The university issues a digital credential to student **Aarav Sharma** for **B.Tech. Computer Science and Engineering (VIT)** with unique certificate ID `VIT-BTECH-CSE-2024-001`. Upon on-chain confirmation, DegreeVault automatically generates a high-error-correction QR code linking to the verification portal, complete with **Download QR Code (PNG)** and **Copy Verification URL** buttons.
 
 <div align="center">
-  <img src="./assets/revoke.png" alt="Revoke Degree UI" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
+  <img src="./assets/issue.png" alt="Issue Degree & QR Code Card" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
 </div>
 <br/>
 
-### 5. Post-Revocation Verification
-Once revoked, the degree remains on-chain. When queried, DegreeVault identifies the document as an authentic record that has since been marked **Invalid** by the issuer, ensuring full auditability.
+---
+
+### 4. Batch Degree Issuance via CSV Import & Multi-Mint
+Universities can upload a `.csv` roster containing dozens of student records. An interactive **Batch Preview Table** parses records (e.g. **Priya Patel** — *M.Tech. AI & ML*, **Rohan Verma** — *B.Tech. ECE*) before executing an optimized multi-credential batch mint in a single transaction to minimize gas consumption.
 
 <div align="center">
-  <img src="./assets/afterrevoke.png" alt="After Revoke UI" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
+  <img src="./assets/05-batch-issue.png" alt="Batch Degree Issuance via CSV Preview" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
 </div>
 <br/>
 
-### 6. Blockchain Transaction Logs (Backend Execution)
-Real-time blockchain interactions, including contract calls and transaction validation executing on the active RPC node.
+---
+
+### 5. In-App Credential Verification
+Any user can verify a degree within the main dApp. Entering certificate ID `VIT-BTECH-CSE-2024-001` queries the smart contract and displays the official **✓ Valid** verification card with student name, degree program, issue date, issuer address, and the embedded QR verification code.
 
 <div align="center">
-  <img src="./assets/backend-logs.png" alt="Backend Transaction Logs" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
+  <img src="./assets/verification.png" alt="In-App Credential Verification" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
 </div>
+<br/>
+
+---
+
+### 6. Dedicated Zero-Wallet Employer Portal (`/verify?cert=...`)
+Designed specifically for employers, background check agencies, and recruiters. Scanning the QR code automatically opens the dedicated verification portal (`/verify?cert=VIT-BTECH-CSE-2024-001`). The portal queries the blockchain directly via a read-only RPC provider—**zero MetaMask wallet, extensions, or crypto required**.
+
+<div align="center">
+  <img src="./assets/07-employer-portal-valid.png" alt="Dedicated Zero-Wallet Employer Verification Portal" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
+</div>
+<br/>
+
+---
+
+### 7. Administrative Degree Revocation with Guardrails
+If an academic credential must be revoked (e.g. disciplinary action or administrative correction), an authorized university administrator can initiate revocation. A built-in browser confirmation prompt prevents accidental clicks before submitting the transaction to the blockchain.
+
+<div align="center">
+  <img src="./assets/revoke.png" alt="Revoke Degree on Blockchain" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
+</div>
+<br/>
+
+---
+
+### 8. Real-Time Employer Invalidation (Post-Revocation)
+Once revoked, the transaction is permanently etched onto the blockchain. Anyone re-checking the certificate in the Employer Portal immediately sees a **Red Shield with "✗ VERIFIED — REVOKED"**. This preserves the historical audit log while completely preventing revoked degrees from being passed off as valid.
+
+<div align="center">
+  <img src="./assets/afterrevoke.png" alt="Employer Portal Real-Time Invalidation" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
+</div>
+<br/>
+
+---
+
+### 9. Student Portfolio — "My Degrees"
+When student **Aarav Sharma** connects their wallet (`0x3C44...93BC`), they can access the **My Degrees** tab. This showcases their Soulbound Token (SBT) portfolio, providing a verifiable, tamper-proof record of all credentials irrevocably tied to their address.
+
+<div align="center">
+  <img src="./assets/11-student-portfolio.png" alt="Student Portfolio My Degrees" width="900" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"/><br/>
+</div>
+<br/>
 
 ---
 ## ❗ Problem Statement
