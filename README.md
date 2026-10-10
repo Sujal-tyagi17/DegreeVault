@@ -317,7 +317,23 @@ npx hardhat test
 
 # Run tests with active gas benchmarking/reporting
 REPORT_GAS=true npx hardhat test
+
+# Line / branch coverage
+npx hardhat coverage
 ```
+
+### Review-3 benchmark (gas, latency, access control, QR)
+
+`scripts/bench-review3.js` deploys the contract on a local Hardhat node and measures single and batch issuance gas, verification and revocation latency, unauthorized-write rejection, soulbound transfer blocking, and the QR flow end to end (encode → decode → verify).
+
+```bash
+# terminal 1
+npx hardhat node
+# terminal 2
+npm run bench
+```
+
+It writes `sample_batch_degrees.csv` (100 rows in the CSV-import format: `studentWallet,studentName,degreeName,certificateId`) and `bench-output/results.json`. Gas figures and pass counts are deterministic; latencies vary slightly between machines.
 
 ---
 

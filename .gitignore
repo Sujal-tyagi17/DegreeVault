@@ -22,9 +22,10 @@ TEST_FLOW_AND_PRESENTATION_GUIDE.md
 *.md.bak
 
 # Test & Execution Scripts (preserve deploy/check scripts)
-scripts/
+scripts/*
 !scripts/deploy.js
 !scripts/check-transactions.js
+!scripts/bench-review3.js
 
 # Logs, Test Reports & Temporary Artifacts
 *.log

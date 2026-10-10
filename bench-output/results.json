@@ -1,0 +1,244 @@
+{
+  "network": "localhost",
+  "chainId": 31337,
+  "runAt": "2026-10-10T15:37:24.692Z",
+  "node": "v22.22.0",
+  "ethers": "ethers/5.8.0",
+  "deployGas": 3897400,
+  "singleIssue": {
+    "gas": {
+      "n": 30,
+      "mean": 237319.8,
+      "median": 230487,
+      "p95": 247575,
+      "min": 230463,
+      "max": 281763
+    },
+    "latencyMs": {
+      "n": 30,
+      "mean": 21.26,
+      "median": 20.54,
+      "p95": 32.66,
+      "min": 16.46,
+      "max": 34.97
+    }
+  },
+  "batch": [
+    {
+      "size": 1,
+      "reps": 3,
+      "gasTotal": 236602,
+      "gasPerCredential": 236602,
+      "pctOfCap": 1.4,
+      "latencyMs": {
+        "n": 3,
+        "mean": 20.19,
+        "median": 19.94,
+        "p95": 21.68,
+        "min": 18.97,
+        "max": 21.68
+      }
+    },
+    {
+      "size": 5,
+      "reps": 3,
+      "gasTotal": 1028951,
+      "gasPerCredential": 205790,
+      "pctOfCap": 6.1,
+      "latencyMs": {
+        "n": 3,
+        "mean": 33.43,
+        "median": 33.5,
+        "p95": 38.68,
+        "min": 28.1,
+        "max": 38.68
+      }
+    },
+    {
+      "size": 10,
+      "reps": 3,
+      "gasTotal": 2019434,
+      "gasPerCredential": 201943,
+      "pctOfCap": 12,
+      "latencyMs": {
+        "n": 3,
+        "mean": 48.3,
+        "median": 47.37,
+        "p95": 50.77,
+        "min": 46.76,
+        "max": 50.77
+      }
+    },
+    {
+      "size": 25,
+      "reps": 3,
+      "gasTotal": 4881721,
+      "gasPerCredential": 195269,
+      "pctOfCap": 29.1,
+      "latencyMs": {
+        "n": 3,
+        "mean": 56.1,
+        "median": 57.86,
+        "p95": 60.26,
+        "min": 50.18,
+        "max": 60.26
+      }
+    },
+    {
+      "size": 50,
+      "reps": 3,
+      "gasTotal": 9652261,
+      "gasPerCredential": 193045,
+      "pctOfCap": 57.5,
+      "latencyMs": {
+        "n": 3,
+        "mean": 118.48,
+        "median": 116.42,
+        "p95": 131.94,
+        "min": 107.07,
+        "max": 131.94
+      }
+    },
+    {
+      "size": 75,
+      "reps": 3,
+      "gasTotal": 14423905,
+      "gasPerCredential": 192319,
+      "pctOfCap": 86,
+      "latencyMs": {
+        "n": 3,
+        "mean": 180.53,
+        "median": 181.44,
+        "p95": 213.72,
+        "min": 146.43,
+        "max": 213.72
+      }
+    },
+    {
+      "size": 100,
+      "failed": true,
+      "estimate": null,
+      "error": "Transaction ran out of gas"
+    }
+  ],
+  "batchOver100Rejected": {
+    "rejected": true,
+    "reason": "Error: VM Exception while processing transaction: reverted with reason string 'Maximum 100 degrees per batch'"
+  },
+  "csv": {
+    "rows": 100,
+    "parseMs": 0.27,
+    "issueMs": 802.4,
+    "gas": 19306342,
+    "txCount": 2,
+    "fullBatchError": "Transaction ran out of gas",
+    "verifiedAfterIssue": 100
+  },
+  "verify": {
+    "validLookups": {
+      "latencyMs": {
+        "n": 200,
+        "mean": 5.01,
+        "median": 4.62,
+        "p95": 7.52,
+        "min": 2.76,
+        "max": 18.79
+      },
+      "correct": 200,
+      "total": 200
+    },
+    "notFoundLookups": {
+      "latencyMs": {
+        "n": 50,
+        "mean": 5.63,
+        "median": 5.52,
+        "p95": 7.21,
+        "min": 4.12,
+        "max": 7.46
+      },
+      "correct": 50,
+      "total": 50
+    },
+    "estimateGasView": 37950
+  },
+  "revoke": {
+    "n": 20,
+    "gas": {
+      "n": 20,
+      "mean": 28474.8,
+      "median": 28476,
+      "p95": 28476,
+      "min": 28464,
+      "max": 28476
+    },
+    "latencyMs": {
+      "n": 20,
+      "mean": 18.93,
+      "median": 19.14,
+      "p95": 25.16,
+      "min": 14.4,
+      "max": 25.16
+    },
+    "verifyShowsRevoked": 20,
+    "recordRetained": 20,
+    "doubleRevokeRejected": 20
+  },
+  "rbac": {
+    "attackers": 10,
+    "attemptsPerOp": 10,
+    "rejected": {
+      "issueDegree": 10,
+      "issueBatchDegrees": 10,
+      "revokeDegree": 10,
+      "grantRole": 10
+    },
+    "totalAttempts": 40,
+    "totalRejected": 40,
+    "stillValid": true,
+    "sampleReasons": [
+      "Error: VM Exception while processing transaction: reverted with custom error 'Ac"
+    ]
+  },
+  "soulbound": {
+    "attempts": 10,
+    "rejected": 10,
+    "holderBalance": 70
+  },
+  "qr": {
+    "cases": 50,
+    "decoded": 50,
+    "correctStatus": 50,
+    "byState": {
+      "VALID": [
+        30,
+        30
+      ],
+      "REVOKED": [
+        10,
+        10
+      ],
+      "NOT FOUND": [
+        10,
+        10
+      ]
+    },
+    "roundTripMs": {
+      "n": 50,
+      "mean": 36.88,
+      "median": 32.49,
+      "p95": 55.55,
+      "min": 26.55,
+      "max": 160.82
+    }
+  },
+  "qrOcclusion": {
+    "0": "10/10",
+    "0.05": "10/10",
+    "0.1": "10/10",
+    "0.15": "10/10",
+    "0.2": "10/10",
+    "0.25": "0/10",
+    "0.3": "0/10"
+  },
+  "totalDegreesOnChain": 628
+}
