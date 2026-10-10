@@ -7,7 +7,7 @@
 </div>
 <br/>
 
-**DegreeVault** is a production-grade, blockchain-based degree verification system built with Solidity, Hardhat, and Next.js. This decentralized application (dApp) enables academic institutions to issue, verify, and revoke academic credentials in a transparent, secure, and immutable manner — seamlessly deployed on the **Polygon** network for high performance and low gas fees.
+**DegreeVault** is a full-stack, blockchain-based degree verification system built with Solidity, Hardhat, and Next.js. This decentralized application (dApp) enables academic institutions to issue, verify, and revoke academic credentials in a transparent and tamper-resistant manner. It is tested on a local Hardhat network and designed for deployment on the **Polygon** network for low gas fees.
 
 ## 📋 Table of Contents
 
@@ -155,8 +155,8 @@ DegreeVault is implemented on EVM-compatible networks (Polygon natively) after d
 
 ### 💰 Cost vs. Performance Trade-off
 Traditional databases are faster and cheaper per write. Blockchain introduces network interaction latency and gas costs. 
-- **Optimization**: To balance this, DegreeVault stores *only* the **SHA-256 cryptographic hash** of the certificate details on-chain alongside metadata, rather than heavy JSON artifacts.
-- **Ecosystem**: Deployed selectively to **Polygon** to reduce costs by 99% compared to Ethereum L1, yielding near-instant settlement.
+- **Optimization**: Credentials are keyed by a `bytes32` keccak256 hash of the certificate ID, and batch issuance mints many credentials in one transaction to reduce gas per credential.
+- **Ecosystem**: Targets **Polygon** (EVM-compatible, low-cost network). Polygon Amoy testnet deployment and fee measurement are planned.
 
 ---
 
@@ -166,7 +166,7 @@ Traditional databases are faster and cheaper per write. Blockchain introduces ne
 ### Smart Contract Layer
 - **Issue Degrees**: Authorized universities issue academic credentials anchored to unique IDs as non-transferable Soulbound Tokens (SBTs).
 - **Batch Degree Issuance**: Mint multiple credentials in a single on-chain transaction to optimize gas costs.
-- **Verify Degrees**: Trustless, public verification mechanism validating cryptographic hashes and issuer signatures.
+- **Verify Degrees**: Public, read-only lookup by certificate ID (hashed with keccak256) returning VALID, REVOKED or NOT FOUND.
 - **Revoke Degrees with Guardrails**: Secure revocation that triggers state changes without erasing immutable history, backed by UI confirmation dialogs.
 - **Role-Based Access Control (RBAC)**: Strict OpenZeppelin `AccessControl` (`DEFAULT_ADMIN_ROLE`, `UNIVERSITY_ROLE`) preventing unauthorized contract manipulation.
 - **Event Logging**: Transparent, structured event emissions (`DegreeIssued`, `DegreeRevoked`) mapping every architectural action.
@@ -176,7 +176,7 @@ Traditional databases are faster and cheaper per write. Blockchain introduces ne
 - **Dynamic Role-Based Access Control UI**: Real-time role detection displaying admin tabs (**Issue**, **Batch Issue**, **Revoke**) for verified universities, and placing unauthorized wallets in read-only **Verifier Mode**.
 - **Network Validation & 1-Click Switcher**: Detects unsupported networks (e.g. Ethereum Mainnet `0x1`) and prompts 1-click automatic switching (`wallet_switchEthereumChain`) to Localhost (`31337`) or Polygon Amoy (`80002`).
 - **High-Error-Correction QR Code System**: Generates Level-H QR codes for every issued degree, featuring 1-click PNG image download and direct clipboard URL copying.
-- **Dedicated Zero-Wallet Employer Portal (`/verify?cert=...`)**: Employers and recruiters can scan QR codes to instantly verify credentials on-chain via read-only RPC—no MetaMask, wallet connection, or cryptocurrency required.
+- **Dedicated Zero-Wallet Employer Portal (`/verify?cert=...`)**: Employers and recruiters can scan QR codes to verify credentials on-chain via read-only RPC. No transaction or cryptocurrency is needed; the page currently reads from the local node and falls back to MetaMask, so a configurable public RPC is planned for fully wallet-free use.
 - **Batch CSV Import & Preview**: Upload `.csv` files and inspect student records in an interactive table before batch-minting on-chain.
 - **"My Degrees" Student Portfolio**: Connected student wallets view their personal Soulbound Token credentials and real-time status.
 - **Real-Time Transaction Lifecycle**: Multi-state transaction card (`AWAITING_SIGNATURE` → `PENDING` → `CONFIRMED` / `FAILED`) with mined block numbers and explorer links.
@@ -210,8 +210,8 @@ The main contract `DegreeVerification.sol` manages credentials through a secure 
 - **Reasoning**: True auditing requires history. Deleting a struct violates the blockchain design pattern.
 
 ### 🔑 Hash-Based Storage Model
-- The protocol acts purely as an anchor. It logs the `bytes32 certificateHash` of the actual data off-chain.
-- **Reasoning**: Direct string or document storage costs exorbitant gas. Hashing guarantees document integrity off-chain while maintaining a minimal, cheap on-chain footprint. Protects student privacy explicitly.
+- Each credential is keyed by `bytes32 certificateHash` = keccak256(certificate ID). The student wallet, name, degree name, issue date and validity flag are stored on-chain.
+- **Reasoning**: A fixed-size key gives constant-time lookups and blocks duplicate issuance. Moving personal data off-chain and storing only a salted hash is planned, to improve privacy and reduce gas.
 
 ### 📡 Event-Driven Integration
 - `DegreeIssued` and `DegreeRevoked` events are consistently emitted.
@@ -224,7 +224,7 @@ The main contract `DegreeVerification.sol` manages credentials through a secure 
 
 - **Attack Surface Minimization**: Strict visibility modifiers (`external`, `private`) strictly scope logic limits.
 - **Duplicate Issuance Prevention**: `require()` flags ensure a specific hash identifier cannot be minted twice, preventing replay issuance.
-- **Integrity through Cryptography**: Mapping inputs to `bytes32` hashes acts as a proof-of-knowledge. Even a compromised backend cannot forge an invalid credential if the blockchain hash does not correspond.
+- **Write Integrity**: Only accounts holding `UNIVERSITY_ROLE` can create or revoke records, and an issued record can only change its validity flag, so a credential cannot be silently altered after issuance.
 - **Library Reliance**: We lean entirely on audited OpenZeppelin standard libraries over writing bespoke security wrappers.
 
 ---
